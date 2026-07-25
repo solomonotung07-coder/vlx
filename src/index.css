@@ -1457,6 +1457,10 @@ body.menu-open .siteFooter {
     font-size: clamp(24px, 7vw, 36px);
     line-height: 1.1;
     letter-spacing: 1.4px;
+    display: inline-block;
+    max-width: fit-content;
+    margin-inline: auto;
+    white-space: nowrap;
   }
 
   .heroTags {
