@@ -620,6 +620,8 @@ body.menu-open .siteFooter {
   font-weight: 600;
   letter-spacing: 2.5px;
   font-family: var(--font-heading);
+  max-width: 760px;
+  margin-inline: auto;
 }
 
 #eventTitle {
@@ -681,7 +683,7 @@ body.menu-open .siteFooter {
   position: relative;
   margin: 0 auto;
   display: flex;
-  max-width: fit-content;
+  max-width: 100%;
   flex-direction: row;
   align-items: center;
   justify-content: center;
@@ -724,13 +726,14 @@ body.menu-open .siteFooter {
 }
 
 .textContent {
-  display: inline-block;
+  display: block;
   position: relative;
   z-index: 2;
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   line-height: 2rem;
+  width: 100%;
 }
 
 .floatingLinesContainer {
