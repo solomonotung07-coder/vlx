@@ -1461,11 +1461,10 @@ body.menu-open .siteFooter {
     line-height: 1.08;
     letter-spacing: 0.9px;
     display: block;
-    max-width: 100%;
+    max-width: 290px;
     margin-inline: auto;
     text-align: center;
-    overflow-wrap: break-word;
-    word-break: break-word;
+    white-space: nowrap;
   }
 
   .heroTags {
