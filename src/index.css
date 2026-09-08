@@ -1597,6 +1597,3 @@ body.menu-open {
   }
 }
 
-#eventTheme {
-  font-size: clamp(30px, 4vw, 72px);
-}
