@@ -624,6 +624,10 @@ body.menu-open .siteFooter {
   margin-inline: auto;
 }
 
+.eventThemeLine {
+  display: block;
+}
+
 #eventTitle {
   font-size: clamp(32px, 4vw, 60px);
   font-weight: 800;
@@ -1457,13 +1461,17 @@ body.menu-open .siteFooter {
 
 @media (max-width: 640px) {
   #eventTheme {
-    font-size: clamp(18px, 5.2vw, 30px);
-    line-height: 1.08;
-    letter-spacing: 0.9px;
+    font-size: clamp(18px, 4vw, 30px);
+    line-height: 1.12;
+    letter-spacing: 0.6px;
     display: block;
-    max-width: 290px;
+    max-width: 100%;
     margin-inline: auto;
     text-align: center;
+  }
+
+  .eventThemeLine {
+    display: block;
     white-space: nowrap;
   }
 

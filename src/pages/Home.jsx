@@ -95,9 +95,8 @@ const Home = () => {
             className="custom-class"
           >
             <h1 id="eventTheme">
-              Media and Production Gear
-              <br />
-              For Every Vision.
+              <span className="eventThemeLine">Media And Production Gear</span>
+              <span className="eventThemeLine">For Every Vision</span>
             </h1>
           </GradientText>
           <div className="eventTitleContainer">
