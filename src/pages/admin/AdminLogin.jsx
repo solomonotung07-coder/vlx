@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
 
-const AdminLogin = ({ notice = "" }) => {
+const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setError("");
     setSubmitting(true);
     const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -28,18 +28,15 @@ const AdminLogin = ({ notice = "" }) => {
   return (
     <form className="cms-form" onSubmit={handleSubmit} noValidate>
       <h1 className="cms-auth-title">Rentals CMS</h1>
-      <p className="cms-muted">Sign in to manage the Featured Rentals on the website.</p>
-
-      {notice && (
-        <p className="cms-notice" role="status">
-          {notice}
-        </p>
-      )}
+      <p className="cms-muted">
+        Sign in to manage the Featured Rentals on the website.
+      </p>
 
       <label className="cms-field">
         <span className="cms-label">Email</span>
         <input
           type="email"
+          placeholder="example@gmail.com"
           className="cms-input"
           autoComplete="username"
           value={email}
@@ -53,6 +50,7 @@ const AdminLogin = ({ notice = "" }) => {
         <span className="cms-label">Password</span>
         <input
           type="password"
+          placeholder="Enter your password"
           className="cms-input"
           autoComplete="current-password"
           value={password}
@@ -75,7 +73,7 @@ const AdminLogin = ({ notice = "" }) => {
         {submitting ? "Signing in…" : "Sign in"}
       </button>
 
-      <p className="cms-hint cms-center-text">You’ll stay signed in for 30 minutes.</p>
+      {/* <p className="cms-hint cms-center-text">You’ll stay signed in for 30 minutes.</p> */}
 
       <a href="/" className="cms-link cms-center-text">
         ← Back to website

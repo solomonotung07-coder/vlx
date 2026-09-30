@@ -2,7 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { getSessionExpiry, isSessionExpired } from "../../lib/adminSession";
 import { checkIsAdmin } from "../../lib/rentals";
-import { isSupabaseConfigured, supabase } from "../../lib/supabase";
+import {
+  isSupabaseConfigured,
+  supabase,
+  supabaseConfigError,
+} from "../../lib/supabase";
 import AdminDashboard from "./AdminDashboard";
 import AdminLogin from "./AdminLogin";
 import "./admin.css";
@@ -11,7 +15,9 @@ const Shell = ({ children }) => (
   <div className="cms">
     <Toaster
       position="top-right"
-      toastOptions={{ style: { fontFamily: "var(--font-body)", fontSize: "0.9rem" } }}
+      toastOptions={{
+        style: { fontFamily: "var(--font-body)", fontSize: "0.9rem" },
+      }}
     />
     {children}
   </div>
@@ -29,29 +35,28 @@ const CenteredCard = ({ children }) => (
 const Admin = () => {
   const [session, setSession] = useState(null);
   const [authReady, setAuthReady] = useState(!isSupabaseConfigured);
-  const [adminCheck, setAdminCheck] = useState({ userId: null, isAdmin: false });
-  const [expiredNotice, setExpiredNotice] = useState(false);
+  const [adminCheck, setAdminCheck] = useState({
+    userId: null,
+    isAdmin: false,
+  });
 
   // Sign out this browser and ask for the password again.
   const expireSession = useCallback(() => {
     setSession(null);
-    setExpiredNotice(true);
     supabase?.auth.signOut({ scope: "local" });
   }, []);
 
   useEffect(() => {
     if (!supabase) return undefined;
-    const { data } = supabase.auth.onAuthStateChange((event, nextSession) => {
+    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       // A login saved in the browser that is older than 30 minutes is not reused.
       if (nextSession && isSessionExpired(nextSession)) {
         setSession(null);
         setAuthReady(true);
-        setExpiredNotice(true);
         // Supabase advises not to call auth methods inside this callback.
         setTimeout(() => supabase.auth.signOut({ scope: "local" }), 0);
         return;
       }
-      if (event === "SIGNED_IN") setExpiredNotice(false);
       setSession(nextSession);
       setAuthReady(true);
     });
@@ -67,7 +72,10 @@ const Admin = () => {
     const check = () => {
       if (Date.now() >= expiresAt) expireSession();
     };
-    const timeout = setTimeout(check, Math.max(0, expiresAt - Date.now()) + 250);
+    const timeout = setTimeout(
+      check,
+      Math.max(0, expiresAt - Date.now()) + 250,
+    );
     const interval = setInterval(check, 15000);
     document.addEventListener("visibilitychange", check);
     window.addEventListener("focus", check);
@@ -93,7 +101,6 @@ const Admin = () => {
   }, [userId]);
 
   const signOut = () => {
-    setExpiredNotice(false);
     supabase?.auth.signOut({ scope: "local" });
   };
 
@@ -102,13 +109,24 @@ const Admin = () => {
       <Shell>
         <CenteredCard>
           <h1 className="cms-auth-title">Connect the CMS</h1>
+          {supabaseConfigError ? (
+            <p className="cms-alert" role="alert">
+              {supabaseConfigError}
+            </p>
+          ) : (
+            <p className="cms-muted">
+              The Supabase connection details haven’t been added yet.
+            </p>
+          )}
           <p className="cms-muted">
-            The rentals CMS needs a Supabase project. Follow{" "}
-            <code>CMS_SETUP.md</code> in the project folder, then add these to{" "}
-            <code>.env.local</code> and restart the dev server:
+            On Netlify:{" "}
+            <strong>Site configuration → Environment variables</strong>.
+            Locally: the <code>.env.local</code> file. Paste the values only,
+            with no quotes, then redeploy (or restart <code>npm run dev</code>):
           </p>
           <pre className="cms-code">
-            VITE_SUPABASE_URL=…{"\n"}VITE_SUPABASE_ANON_KEY=…
+            VITE_SUPABASE_URL=https://abcdefgh.supabase.co{"\n"}
+            VITE_SUPABASE_ANON_KEY=eyJhbGciOi…
           </pre>
         </CenteredCard>
       </Shell>
@@ -129,13 +147,7 @@ const Admin = () => {
     return (
       <Shell>
         <CenteredCard>
-          <AdminLogin
-            notice={
-              expiredNotice
-                ? "For security, you were signed out 30 minutes after signing in. Please sign in again."
-                : ""
-            }
-          />
+          <AdminLogin />
         </CenteredCard>
       </Shell>
     );
@@ -161,7 +173,11 @@ const Admin = () => {
             account is not on the CMS admin list. Ask the site owner to add your
             email to the <code>cms_admins</code> table.
           </p>
-          <button type="button" className="cms-btn cms-btn-primary cms-btn-block" onClick={signOut}>
+          <button
+            type="button"
+            className="cms-btn cms-btn-primary cms-btn-block"
+            onClick={signOut}
+          >
             Sign out
           </button>
         </CenteredCard>
@@ -171,10 +187,7 @@ const Admin = () => {
 
   return (
     <Shell>
-      <AdminDashboard
-        userEmail={session.user.email}
-        onSignOut={signOut}
-      />
+      <AdminDashboard userEmail={session.user.email} onSignOut={signOut} />
     </Shell>
   );
 };
