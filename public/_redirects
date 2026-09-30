@@ -1,0 +1,3 @@
+# Netlify: send every app route (e.g. /admin) to the React app.
+# Real files like /logo/vlxlogo.png are still served as normal.
+/*    /index.html   200

@@ -1,0 +1,10 @@
+# Netlify build settings for the VLX site (Vite + React).
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Vite 8 needs Node 20.19+ or 22.12+
+  NODE_VERSION = "22"
+
+# Page routes such as /admin are handled by the React app — see public/_redirects.
