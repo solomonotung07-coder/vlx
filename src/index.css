@@ -14,6 +14,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* For modern browsers (Chrome, Safari, Edge, Opera) */
+::selection {
+  background-color: hsl(48, 97%, 65%); /* The highlight background color */
+  color: #000000; /* The text color when highlighted */
+}
+
+/* For older versions of Mozilla Firefox */
+::-moz-selection {
+  background-color: #ffcc00;
+  color: #000000;
+}
+
 html {
   padding: 0px;
   margin: 0px;
@@ -882,11 +894,21 @@ body.menu-open .siteFooter {
   box-shadow: inset 0 0 0 1px rgba(2, 22, 39, 0.04);
 }
 
-.rental-card-image {
+/* Image box of a rental card. The photo inside can be repositioned /
+   zoomed / fitted per product from the /admin CMS (inline styles). */
+.rental-card-media {
   width: calc(100% - 0.5rem);
   height: 110px;
-  object-fit: cover;
+  flex-shrink: 0;
   border-radius: 0.75rem;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.rental-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
 
@@ -933,6 +955,36 @@ body.menu-open .siteFooter {
 
 .rental-card-button:hover {
   background-color: #021627;
+}
+
+/* Featured Rentals — loading + empty states (data comes from /admin CMS) */
+.rental-card-skeleton {
+  min-height: 230px;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(2, 22, 39, 0.06);
+  background: linear-gradient(90deg, #edf1f3 25%, #f6f9fa 50%, #edf1f3 75%);
+  background-size: 200% 100%;
+  animation: rental-skeleton-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes rental-skeleton-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.rental-cards-message {
+  position: relative;
+  z-index: 60;
+  margin: 0;
+  text-align: center;
+  color: #1f4b72;
+  font-size: 0.95rem;
+}
+
+.rental-cards-message a {
+  color: #021627;
+  font-weight: 600;
 }
 
 /* OUR SERVICES SECTION */
@@ -1519,7 +1571,7 @@ body.menu-open .siteFooter {
     padding: 2.25rem 0.9rem 1.8rem;
   }
 
-  .rental-card-image {
+  .rental-card-media {
     height: 130px;
   }
 

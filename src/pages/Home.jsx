@@ -3,69 +3,14 @@ import GradientText from "../components/GradientText";
 import Plasma from "../components/Plasma";
 import Silk from "../components/Silk";
 import SpotlightCard from "../components/SpotlightCard";
-
-const rentalEquipment = [
-  {
-    name: "Sony FX3 Cinema Camera",
-    price: "₦180,000/day",
-    image:
-      "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=900&q=80",
-    whatsapp: "https://wa.me/2349051376816",
-  },
-  {
-    name: "Aputure LED Lighting Kit",
-    price: "₦45,000/day",
-    image:
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80",
-    whatsapp: "https://wa.me/2349051376816",
-  },
-  {
-    name: "Canon RF Lens Kit",
-    price: "₦95,000/day",
-    image:
-      "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=900&q=80",
-    whatsapp: "https://wa.me/2349051376816",
-  },
-  {
-    name: "DJI Ronin Gimbal",
-    price: "₦70,000/day",
-    image:
-      "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=900&q=80",
-    whatsapp: "https://wa.me/2349051376816",
-  },
-  {
-    name: "DJI Ronin Gimbal",
-    price: "₦70,000/day",
-    image:
-      "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=900&q=80",
-    whatsapp: "https://wa.me/2349051376816",
-  },
-  {
-    name: "DJI Ronin Gimbal",
-    price: "₦70,000/day",
-    image:
-      "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=900&q=80",
-    whatsapp: "https://wa.me/2349051376816",
-  },
-  {
-    name: "DJI Ronin Gimbal",
-    price: "₦70,000/day",
-    image:
-      "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=900&q=80",
-    whatsapp: "https://wa.me/2349051376816",
-  },
-  // {
-  //   name: "DJI Ronin Gimbal",
-  //   price: "₦70,000/day",
-  //   image: "/logo/vlxlogo.png",
-  //   whatsapp: "https://wa.me/2349051376816",
-  // },
-];
+import useRentals from "../hooks/useRentals";
 
 const buildRentalMessage = (item) =>
   `Hello, I would like to rent the ${item.name} (${item.price}) from your website.`;
 
 const Home = () => {
+  const { rentals, loading, error } = useRentals();
+
   return (
     <div className="sectionContainer" id="top">
       <div className="heroSection" id="borderRightLeft">
@@ -132,35 +77,61 @@ const Home = () => {
           </h3>
         </div>
 
-        <div className="cards-container">
-          {rentalEquipment.map((item) => (
-            <SpotlightCard
-              key={item.name}
-              className="custom-spotlight-card"
-              spotlightColor="#b4c3d0"
-            >
-              <div className="rental-card-inner">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="rental-card-image"
-                />
-                <h3 className="rental-card-title">{item.name}</h3>
-                <p className="rental-card-price">{item.price}</p>
-                <a
-                  href={`${item.whatsapp}?text=${encodeURIComponent(
-                    buildRentalMessage(item),
-                  )}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="rental-card-button"
-                >
-                  Rent Now
-                </a>
-              </div>
-            </SpotlightCard>
-          ))}
+        <div className="cards-container" aria-busy={loading}>
+          {loading &&
+            [0, 1, 2, 3].map((i) => (
+              <div key={i} className="rental-card-skeleton" aria-hidden="true" />
+            ))}
+
+          {!loading &&
+            rentals.map((item) => (
+              <SpotlightCard
+                key={item.id}
+                className="custom-spotlight-card"
+                spotlightColor="#b4c3d0"
+              >
+                <div className="rental-card-inner">
+                  <div className="rental-card-media">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="rental-card-image"
+                      style={item.imageStyle}
+                      loading="lazy"
+                    />
+                  </div>
+                  <h3 className="rental-card-title">{item.name}</h3>
+                  <p className="rental-card-price">{item.price}</p>
+                  <a
+                    href={`${item.whatsapp}?text=${encodeURIComponent(
+                      buildRentalMessage(item),
+                    )}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rental-card-button"
+                  >
+                    Rent Now
+                  </a>
+                </div>
+              </SpotlightCard>
+            ))}
         </div>
+
+        {!loading && rentals.length === 0 && (
+          <p className="rental-cards-message">
+            {error
+              ? "We couldn’t load our rentals right now. "
+              : "New gear is on the way. "}
+            <a
+              href="https://wa.me/2349051376816"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Chat with us on WhatsApp
+            </a>{" "}
+            for what’s available today.
+          </p>
+        )}
       </div>
 
       <div className="servicesSection" id="our-services" data-section>
