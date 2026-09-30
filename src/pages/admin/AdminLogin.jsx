@@ -1,15 +1,45 @@
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { supabase } from "../../lib/supabase";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const passwordRef = useRef(null);
+  const caretRef = useRef(null);
+
+  // Switching between hidden/shown resets the cursor in some browsers —
+  // put it back where it was so typing carries on in the right place.
+  useLayoutEffect(() => {
+    const input = passwordRef.current;
+    const caret = caretRef.current;
+    if (!input || !caret) return undefined;
+    caretRef.current = null;
+    const restore = () => {
+      input.focus();
+      input.setSelectionRange(caret.start, caret.end);
+    };
+    // Make the browser rebuild the box now, so the cursor we set sticks.
+    void input.offsetWidth;
+    restore();
+    return undefined;
+  }, [showPassword]);
+
+  const togglePassword = () => {
+    const input = passwordRef.current;
+    if (input && document.activeElement === input) {
+      caretRef.current = { start: input.selectionStart, end: input.selectionEnd };
+    }
+    setShowPassword((shown) => !shown);
+  };
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setShowPassword(false);
     setSubmitting(true);
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email: email.trim(),
@@ -46,18 +76,40 @@ const AdminLogin = () => {
         />
       </label>
 
-      <label className="cms-field">
-        <span className="cms-label">Password</span>
-        <input
-          type="password"
-          placeholder="Enter your password"
-          className="cms-input"
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </label>
+      <div className="cms-field">
+        <label className="cms-label" htmlFor="cms-password">
+          Password
+        </label>
+        <div className="cms-password">
+          <input
+            ref={passwordRef}
+            id="cms-password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter your password"
+            className="cms-input"
+            autoComplete="current-password"
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck={false}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="button"
+            className="cms-password-toggle"
+            onClick={togglePassword}
+            // Keep the cursor in the password box while toggling.
+            onMouseDown={(e) => e.preventDefault()}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-pressed={showPassword}
+            aria-controls="cms-password"
+            title={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? <FiEyeOff aria-hidden="true" /> : <FiEye aria-hidden="true" />}
+          </button>
+        </div>
+      </div>
 
       {error && (
         <p className="cms-alert" role="alert">

@@ -987,6 +987,48 @@
   border-top: 1px solid var(--cms-border);
 }
 
+/* Password box with show / hide button */
+.cms-password {
+  position: relative;
+}
+
+.cms-password .cms-input {
+  padding-right: 2.9rem;
+}
+
+/* Edge/IE add their own eye button — hide it so there's only one. */
+.cms-password .cms-input::-ms-reveal,
+.cms-password .cms-input::-ms-clear {
+  display: none;
+}
+
+.cms-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.35rem;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--cms-muted);
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.cms-password-toggle:hover {
+  color: var(--cms-navy);
+  background: rgba(2, 22, 39, 0.05);
+}
+
+.cms-password-toggle:focus-visible {
+  outline: 3px solid rgba(31, 75, 114, 0.35);
+  outline-offset: 1px;
+}
+
 /* Save errors live in the always-visible footer, next to the buttons. */
 .cms-modal-foot {
   flex-wrap: wrap;
