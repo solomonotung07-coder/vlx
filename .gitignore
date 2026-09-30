@@ -11,6 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
+.env*
+supabase
+CMS_SETUP.md
 
 # Editor directories and files
 .vscode/*
