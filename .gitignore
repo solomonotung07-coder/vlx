@@ -8,12 +8,17 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-supabase*
 dist
 dist-ssr
 *.local
 .env*
-CMS_SETUP.md*
+
+# Ignore local Supabase CLI and config directory
+supabase/
+.supabase/
+
+# Ignore CMS setup configuration file
+CMS_SETUP.md
 
 # Editor directories and files
 .vscode/*
